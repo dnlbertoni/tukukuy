@@ -52,7 +52,6 @@ exports.updateSingle = (req, res) => {
  */
 exports.insertData = async (titulo) => {
     let data = {
-        id:1,
         titulo: titulo,
         fechas:{
             inicio: null,
@@ -60,10 +59,17 @@ exports.insertData = async (titulo) => {
         },
         estado: "Pendiente"
     }
-    const promesa = model(data);
-    promesa.save().then((data)=> console.log(data)).catch((err)=> console.log(err));
-    console.log(promesa.ObjectId());
-    return promesa.ObjectId();
+    const promesa = new model(data);
+    let prom = await promesa.save().then(doc =>{
+        console.log('Dato insertado: ', doc);
+    })
+    .catch(err => {
+        console.error('Error al insertar: ', err.message);
+    });
+
+//    let prom = await promesa.save().then((data)=> console.log(data)).catch((err)=> console.log(err));
+    console.log(prom);
+    return prom;
 }
 
 /**

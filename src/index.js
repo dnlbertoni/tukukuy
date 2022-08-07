@@ -8,6 +8,7 @@ const TelegramBot = require('node-telegram-bot-api');
 // replace the value below with the Telegram token you receive from @BotFather
 const TOKEN = process.env.HTTP_API_TELEGRAM || 'NOTOKEN';
 
+const db = require('./services/database');
 
 const options = {
   polling: true
@@ -74,10 +75,10 @@ bot.on('callback_query', function onCallbackQuery(callbackQuery) {
 });
 
 // Matches /photo
-bot.onText(/^nueva (.+)/, function onPhotoText(msg, match) {
+bot.onText(/^nueva (.+)/, async function onPhotoText(msg, match) {
   console.log(match);
   let titulo = match[1];
-  var text = promesas.insertData(titulo).then((rtn)=> text = rtn).catch((err)=> console.log(err));
+  var text = await promesas.insertData(titulo).then((rtn)=> text = rtn).catch((err)=> console.log(err));
 
   bot.sendMessage(msg.chat.id, text );
 });
