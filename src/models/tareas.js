@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const promesaSchema = mongoose.Schema({
+const tareasSchema = mongoose.Schema({
     titulo:{
         type: String, 
         unique: false,
@@ -18,9 +18,10 @@ const promesaSchema = mongoose.Schema({
         },
     }, 
     estado: {
-        type: String
+        type: String, 
+        required: true
     }
 }
 );
 
-module.exports = mongoose.model('promesas', promesaSchema);
+module.exports = mongoose.model('tareas', tareasSchema);

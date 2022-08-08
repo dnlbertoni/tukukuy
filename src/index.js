@@ -1,7 +1,6 @@
 const config = require('dotenv').config();
 
 const request = require('request');
-const promesas = require('./controllers/promesas');
 
 const TelegramBot = require('node-telegram-bot-api');
 
@@ -9,6 +8,8 @@ const TelegramBot = require('node-telegram-bot-api');
 const TOKEN = process.env.HTTP_API_TELEGRAM || 'NOTOKEN';
 
 const db = require('./services/database');
+const { callbacksIdx } = require('./routes/menu/callbacks');
+const route = require('./routes');
 
 const options = {
   polling: true
@@ -35,50 +36,21 @@ bot.on('/start', function(msg){
     }
 });
 
-// Matches /photo
-bot.onText(/menu/, function onPhotoText(msg) {
-  const opts = {
-    reply_to_message_id: msg.message_id,
-    reply_markup: {
-      inline_keyboard:[ 
-        [
-          { text:"hola", callback_data:'bm1'}
-        ]
-      ]
+bot.onText(/./,  async (msg)=> {
+  let rs = await route(msg);
+  if ( rs != null ){
+    if(rs.img != null ){
+      bot.sendPhoto(msg.chat.id, rs.img, rs.opts);
+    }else{
+      bot.sendMessage(msg.chat.id, rs.text , rs.opts);
     }
-  };
-  bot.sendMessage(msg.chat.id, 'En que puedo ayudarte?', opts);
+  }
 });
+
 
 // Handle callback queries
-bot.on('callback_query', function onCallbackQuery(callbackQuery) {
-  const action = callbackQuery.data;
+bot.on('callback_query', async(callbackQuery)=> {
   const msg = callbackQuery.message;
-  const opts = {
-    chat_id: msg.chat.id,
-    message_id: msg.message_id,
-  };
-  var text;
-
-  switch (action ){
-    case "bm1":
-      text = 'holis ' + msg.chat.first_name;
-      break;
-    case "bm99":
-      text = 'ok ya voy';
-      break;
-    default:
-      text = ' ';
-      break;
-  }
-  bot.sendMessage(msg.chat.id,text, opts);
-});
-
-// Matches /photo
-bot.onText(/^nueva (.+)/, async function onPhotoText(msg, match) {
-  console.log(match);
-  let titulo = match[1];
-  var text = await promesas.insertData(titulo).then((rtn)=> text = rtn).catch((err)=> console.log(err));
-
-  bot.sendMessage(msg.chat.id, text );
+  let rs  = await callbacksIdx(callbackQuery,msg);
+  bot.sendMessage(msg.chat.id,rs.text, rs.opts);
 });
