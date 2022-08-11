@@ -1,4 +1,4 @@
-const { nuevaTarea, listaTareas } = require("../../controllers/todos");
+const { nuevaTarea, listaTareas, listaAcerrar } = require("../../controllers/todos");
 
 const nuevaAct = async (msg, palabra) => {
   let nombre_tarea = msg.text.substring(palabra.length + 1 );
@@ -23,5 +23,11 @@ const listaActs = async (msg, palabra) => {
   return rs;
 };
 
+const listaPend = async (msg, palabra) => {
 
-module.exports= { nuevaAct, listaActs };
+  let rs = await listaAcerrar(msg);
+  return rs;
+};
+
+
+module.exports= { nuevaAct, listaActs, listaPend };

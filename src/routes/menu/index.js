@@ -6,7 +6,8 @@ const menuIdx = async (msg) => {
             [
               { text:"hola", callback_data:'bm1'},
               { text:"nueva", callback_data:'bt1'},
-              { text:"pendentes", callback_data:'bt2'}              
+              { text:"pendientes", callback_data:'bt2'},             
+              { text:"cerrar", callback_data:'bt3'}              
             ]
           ]
         }

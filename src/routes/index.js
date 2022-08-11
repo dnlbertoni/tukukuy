@@ -1,5 +1,5 @@
 const { menuIdx } = require("./menu")
-const { nuevaAct, listaActs } = require('./todos')
+const { nuevaAct, listaActs, listaPend } = require('./todos')
 
 const route = async(msg)=>{
     let rs;
@@ -20,7 +20,7 @@ const route = async(msg)=>{
             break;            
         case 'cerrar':
         case '/cerrar':
-            rs = await listaActs(msg, pal).catch((err)=> {console.log(err)});
+            rs = await listaPend(msg, pal).catch((err)=> {console.log(err)});
             break;       
         case 'ver':
         case '/ver':

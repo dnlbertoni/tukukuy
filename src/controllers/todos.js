@@ -1,4 +1,3 @@
-const { translateAliases } = require('../models/tareas');
 const tareas = require('../models/tareas');
 
 const nuevaTarea = async(msg, nombre_tarea) => {
@@ -37,4 +36,33 @@ const listaTareas = async(msg, filtro={}) => {
     };
 }
 
-module.exports = {nuevaTarea, listaTareas};
+const listaAcerrar = async(msg) => {
+
+    let filtro = { estado: "Pendiente" };
+
+    const cursor = tareas.find(filtro).cursor();
+
+    let botones = new Array();
+    let text = 'Prodes cerrar algunas de estas : \n';
+    for (let tarea = await cursor.next(); tarea != null; tarea = await cursor.next()) {
+        let obj = { text: tarea.titulo, callback_data:'c_'+tarea._id};
+        botones.push(obj);
+    }
+
+    const opts = {
+        reply_to_message_id: msg.message_id,
+        reply_markup: {
+          inline_keyboard:[ 
+            botones
+          ]
+        }
+      };
+
+    return { 
+        img: null,
+        text: text, 
+        opts: opts
+    };
+}
+
+module.exports = {nuevaTarea, listaTareas, listaAcerrar};
